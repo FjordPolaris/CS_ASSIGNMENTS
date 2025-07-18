@@ -17,6 +17,7 @@ def test_calculate_exp() -> None:
 
 
 # FUNCTIONS
+
 def evolve(amount: int, candy: int, candy_per_evolution: int) -> tuple[int, int, int] | None:
     if candy < candy_per_evolution: return
 
@@ -52,9 +53,11 @@ def calculate_exp(p: int, c: int) -> int:
     current_candy: int = 0
     current_exp: int = 0
     if c: current_candy = c
-    
+   
+    # INITIAL CALCULATION
     current_exp, current_candy = calculate_reward(p, c)
 
+    # WHEN PIDGEY NEED TO BE TURNED INTO CANDY
     if (remaining_amount > 0) and (current_candy == 11):
         remaining_amount -= 1
         current_candy += 1
