@@ -30,7 +30,7 @@ def evolve(amount: int, candy: int, required_candy: int) -> tuple[int, int, int]
 
 
 def calculate_exp(p: int, c: int) -> int:
-    if (p <= 0) or (c <= 0): return 0 
+    if (p <= 0) or (c < 12): return 0 
 
     REQUIRED_CANDY: int = 12
     
