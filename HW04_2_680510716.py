@@ -16,6 +16,7 @@ def test_calculate_exp() -> None:
     print(":>")
 
 
+# FUNCTIONS
 def evolve(amount: int, candy: int, required_candy: int) -> tuple[int, int, int] | None:
     if candy < required_candy: return
     
