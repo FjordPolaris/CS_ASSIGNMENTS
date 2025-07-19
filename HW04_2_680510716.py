@@ -20,35 +20,25 @@ def test_calculate_exp() -> None:
 
 # FUNCTIONS
 
-def evolve(amount: int, candy: int) -> int | None:
-    DEFAULT_EVOLUTION_COST: int = 12
-    DEFAULT_REWARD_EXP: int = 1000
-    
-    pidgey: int = amount or 0
-    max_candy: int = (candy + pidgey) // (DEFAULT_EVOLUTION_COST-1)
-    evolutions: int = min(pidgey, max_candy) 
-
-    reward_exp: int = DEFAULT_REWARD_EXP * evolutions
-
-    return reward_exp
-
-
 def calculate_exp(p: int, c: int) -> int:
     if (p < 1) or (p + c < 13): return 0
 
+    DEFAULT_EVOLUTION_COST: int = 12
+    DEFAULT_REWARD_EXP: int = 1000
+
     amount: int = p or 0
+    candy: int = c or 0
+    exp: int = 0
 
-    current_candy: int = c or 0
-    current_exp: int = 0
-
-    reward_exp = evolve(amount, current_candy) or 0
-    current_exp += reward_exp
+    max_candy: int = (candy + amount) // (DEFAULT_EVOLUTION_COST -1)
+    evolutions: int = min(amount, max_candy)
+    exp = DEFAULT_REWARD_EXP * evolutions
 
     if DEBUG:
-        print("EXP:", current_exp)
+        print("EXP:", exp)
         print(" ")
 
-    return current_exp
+    return exp
 
 
 # MAIN
