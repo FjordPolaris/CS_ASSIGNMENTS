@@ -31,7 +31,7 @@ def calculate_exp(p: int, c: int) -> int:
     candy: int = int(c) or 0
     exp: int = 0
     
-    max_evolutions: int = min((amount + candy) // (DEFAULT_EVOLUTION_COST -1), amount)
+    max_evolutions: int = min(candy // (DEFAULT_EVOLUTION_COST -2), amount)
     exp += DEFAULT_REWARD_EXP * max_evolutions
 
     if DEBUG:
@@ -39,42 +39,6 @@ def calculate_exp(p: int, c: int) -> int:
         print(" ")
 
     return exp
-
-
-'''
-def calculate_exp2(p: int, c: int) -> int:
-    if (p < 1) or (p + c < 13): return 0
-
-    DEFAULT_EVOLUTION_COST: int = 12
-    DEFAULT_REWARD_EXP: int = 1000
-
-    amount1: int = int(p)
-    candy: int = int(c)
-    exp: int = 0
-
-    max_evolutions: int = min(amount1, candy // DEFAULT_EVOLUTION_COST)
-    amount1 -= max_evolutions
-    candy -= max_evolutions*DEFAULT_EVOLUTION_COST
-    candy += max_evolutions
-    amount2: int = max_evolutions
-    print("CANDY1:", candy)
-
-    evolve2: int = 0
-    if amount1 > 0:
-        if candy < (amount1*DEFAULT_EVOLUTION_COST) - amount2:
-            return max_evolutions * DEFAULT_REWARD_EXP
-        candy += amount2
-        evolve2 = min(amount1, candy + amount1 // DEFAULT_EVOLUTION_COST)
-        candy += evolve2
-        amount1 -= evolve2
-        candy -= evolve2 * DEFAULT_EVOLUTION_COST
-
-    exp = DEFAULT_REWARD_EXP * (max_evolutions + evolve2)
-    print(exp, candy, amount1, amount2)
-    print(" ")
-
-    return exp
-'''
 
 
 # MAIN
