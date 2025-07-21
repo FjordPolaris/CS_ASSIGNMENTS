@@ -4,6 +4,7 @@
 # HW04_2
 # 204111 Sec 003
 
+
 DEBUG: bool = False
 
 
@@ -15,7 +16,7 @@ def test_calculate_exp() -> None:
 
     assert calculate_exp(0, 12) == 0
     assert calculate_exp(12, 0) == 0
-    assert calculate_exp(11, 0) == 0
+    assert calculate_exp(30, -12) == 1000
     print(":>")
 
 
@@ -30,9 +31,26 @@ def calculate_exp(p: int, c: int) -> int:
     amount: int = int(p) or 0
     candy: int = int(c) or 0
     exp: int = 0
-    
-    max_evolutions: int = min(candy // (DEFAULT_EVOLUTION_COST -2), amount)
-    exp += DEFAULT_REWARD_EXP * max_evolutions
+   
+    if (amount) and (candy) > 0:
+        max_evolutions: int = min(
+            amount,
+            candy // (DEFAULT_EVOLUTION_COST -2)      
+        )
+        exp += abs(DEFAULT_REWARD_EXP * max_evolutions)
+    else:
+        if (candy < 0):
+            remaining_amount: int = amount + candy  # CANDY = 0
+            remaining_amount -= (DEFAULT_EVOLUTION_COST)
+            candy = (candy + (amount-1))
+            if remaining_amount < 0: return 0
+            print(remaining_amount, candy// 11)
+            
+            max_evolutions: int = min(
+                remaining_amount,
+                candy // (DEFAULT_EVOLUTION_COST-1)
+            )
+            exp += abs(DEFAULT_REWARD_EXP * max_evolutions)
 
     if DEBUG:
         print("EXP:", exp)
