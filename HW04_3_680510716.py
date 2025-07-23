@@ -10,14 +10,22 @@ def divide_plot(x: int, y: int, z: int, start: str) -> str:
     # ไม่ควรทำ string concatenate แล้วบันทึกลงตัวแปรเดิม เช่น
     # ops += 'RIGHT' หรือ ops = ops + 'RIGHT' (ศึกษาได้จาก slide เรื่อง String)
 
+    start_pos: str = str.lower(start)
     common: int = (x + y + z) // 3
-    x_adjustment = common - x
-    y_adjustment = common - y
-    z_adjustment = common - z
 
-    if x_adjustment > 0:
+    x_adjustment: int = common - x
+    y_adjustment: int = common - y
+    z_adjustment: int = common - z
 
-    print(x_adjustment, y_adjustment, z_adjustment)
+    if start_pos == "a":
+        if x_adjustment > 0 and y_adjustment < 0 and z_adjustment < 0:
+            return concat_ops(f"PUSH_RIGHT {str(x_adjustment)}", "")
+        elif x_adjustment > 0 and (y_adjustment > 0 or z_adjustment) > 0:
+            return concat_ops(concat_ops(f"PUSH_RIGHT {str(x_adjustment)}", "RIGHT"), f"PUSH_RIGHT {str(y_adjustment)}")
+        
+        if z_adjustment > 0:
+            print("HI")
+            sub_ops_3 = concat_ops(concat_ops("RIGHT", "RIGHT"), f"PUSH_LEFT {str(z_adjustment)}")
 
     # ไม่แก้บรรทัดนี้
     return ops.strip(', ')
@@ -63,4 +71,5 @@ if __name__ == '__main__':
     from HW04_3_helper import simulate_operations
     ops = divide_plot(2, 5, 8, 'A')
     result = simulate_operations(2, 5, 8, 'A', ops)
+    print(ops)
     print(result)
