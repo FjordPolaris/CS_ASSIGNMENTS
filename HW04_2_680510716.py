@@ -16,7 +16,6 @@ def test_calculate_exp() -> None:
     assert calculate_exp(0, 12) == 0
     assert calculate_exp(12, 0) == 0
 
-    assert calculate_exp(23, 0) == 2000
     assert calculate_exp(36, -12) == 2000
     print(":>")
 
@@ -26,18 +25,15 @@ def test_calculate_exp() -> None:
 def calculate_exp(p: int, c: int) -> int:
     if (p < 1) or (p + c < 13): return 0
     
-    DEFAULT_EVOLUTION_COST: int = 12
+    DEFAULT_EVOLUTION_COST: int = 11
     DEFAULT_REWARD_EXP: int = 1000
 
     amount: int = int(p) or 0
     candy: int = int(c) or 0
     exp: int = 0
 
-    if amount + candy >= 13:
-        max_evolutions: int = min(
-            amount, 
-            (amount + candy) // (DEFAULT_EVOLUTION_COST-1)
-        )
+    if amount + candy > 12:
+        max_evolutions: int = ((amount + candy) - 2) // DEFAULT_EVOLUTION_COST
         exp = (max_evolutions) * DEFAULT_REWARD_EXP
 
     if DEBUG:

@@ -13,15 +13,19 @@ def divide_plot(x: int, y: int, z: int, start: str) -> str:
     start_pos: str = str.lower(start)
     common: int = (x + y + z) // 3
 
-    x_adjustment: int = common - x
-    y_adjustment: int = common - y
-    z_adjustment: int = common - z
+    x_adjustment: int = abs(common - x)
+    y_adjustment: int = abs(common - y)
+    z_adjustment: int = abs(common - z)
 
     if start_pos == "a":
         if x_adjustment > 0 and y_adjustment < 0 and z_adjustment < 0:
             return concat_ops(f"PUSH_RIGHT {str(x_adjustment)}", "")
-        elif x_adjustment > 0 and (y_adjustment > 0 or z_adjustment) > 0:
+        elif x_adjustment > 0 and y_adjustment > 0:
             return concat_ops(concat_ops(f"PUSH_RIGHT {str(x_adjustment)}", "RIGHT"), f"PUSH_RIGHT {str(y_adjustment)}")
+        elif x_adjustment > 0 and z_adjustment > 0:
+            return concat_ops(concat_ops(f"PUSH_RIGHT {str(x_adjustment)}", "RIGHT"), f"PUSH_RIGHT {str(z_adjustment)}")
+        else:
+            return concat_ops("RIGHT")
         
         if z_adjustment > 0:
             print("HI")
@@ -69,7 +73,7 @@ def concat_ops(op1: str, op2: str) -> str:
 
 if __name__ == '__main__':
     from HW04_3_helper import simulate_operations
-    ops = divide_plot(2, 5, 8, 'A')
+    ops = divide_plot(5, 8, 2, 'A')
     result = simulate_operations(2, 5, 8, 'A', ops)
     print(ops)
     print(result)
