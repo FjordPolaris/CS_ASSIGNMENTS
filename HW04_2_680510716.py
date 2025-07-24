@@ -34,7 +34,10 @@ def calculate_exp(p: int, c: int) -> int:
 
     if amount + candy > 12:
         max_evolutions: int = ((amount + candy) - 2) // DEFAULT_EVOLUTION_COST
-        exp = (max_evolutions) * DEFAULT_REWARD_EXP
+        exp = min(
+            (max_evolutions) * DEFAULT_REWARD_EXP,
+            amount * DEFAULT_REWARD_EXP
+        )
 
     if DEBUG:
         print("EXP:", exp)
