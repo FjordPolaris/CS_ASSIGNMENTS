@@ -16,21 +16,21 @@ def divide_plot(x: int, y: int, z: int, start: str) -> str:
     x_adjustment: int = abs(common - x)
     y_adjustment: int = abs(common - y)
     z_adjustment: int = abs(common - z)
+    print(x_adjustment, y_adjustment, z_adjustment)
 
     if start_pos == "a":
-        if x_adjustment > 0 and y_adjustment < 0 and z_adjustment < 0:
+        if x_adjustment > 0 and y_adjustment == 0 and z_adjustment == 0:
             return concat_ops(f"PUSH_RIGHT {str(x_adjustment)}", "")
-        elif x_adjustment > 0 and y_adjustment > 0:
-            return concat_ops(concat_ops(f"PUSH_RIGHT {str(x_adjustment)}", "RIGHT"), f"PUSH_RIGHT {str(y_adjustment)}")
-        elif x_adjustment > 0 and z_adjustment > 0:
+        elif x_adjustment > 0 and y_adjustment > 0 and z_adjustment == 0:
+            if x > y:
+                return concat_ops("RIGHT", f"PUSH_LEFT {y_adjustment}")
+            else:
+                return concat_ops(f"PUSH_RIGHT {str(x_adjustment)}", "")
+        elif x_adjustment > 0 and z_adjustment > 0 and y_adjustment == 0:
             return concat_ops(concat_ops(f"PUSH_RIGHT {str(x_adjustment)}", "RIGHT"), f"PUSH_RIGHT {str(z_adjustment)}")
-        else:
-            return concat_ops("RIGHT")
+        elif y_adjustment > 0 and z_adjustment > 0:
+            return concat_ops("RIGHT", concat_ops("RIGHT", f"PUSH_LEFT {str(z_adjustment)}"))
         
-        if z_adjustment > 0:
-            print("HI")
-            sub_ops_3 = concat_ops(concat_ops("RIGHT", "RIGHT"), f"PUSH_LEFT {str(z_adjustment)}")
-
     # ไม่แก้บรรทัดนี้
     return ops.strip(', ')
 
@@ -74,6 +74,6 @@ def concat_ops(op1: str, op2: str) -> str:
 if __name__ == '__main__':
     from HW04_3_helper import simulate_operations
     ops = divide_plot(5, 8, 2, 'A')
-    result = simulate_operations(2, 5, 8, 'A', ops)
+    result = simulate_operations(5, 8, 2, 'A', ops)
     print(ops)
     print(result)
