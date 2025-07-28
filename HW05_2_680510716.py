@@ -43,12 +43,12 @@ def transform_name(name: str) -> str | None:
             firstname = _firstname[0:9]
             lastname = _lastname[0:5]
 
-        elif len(_firstname) > 9 and len(_lastname) < 5:
+        elif len(_firstname) > 9 and len(_lastname) <= 5:
             length_diff: int = 14 - len(_lastname)
             firstname = _firstname[0:length_diff]
             lastname = _lastname[0:5]
 
-        elif len(_firstname) < 9 and len(_lastname) > 5:
+        elif len(_firstname) <= 9 and len(_lastname) > 5:
             length_diff: int = 14 - len(_firstname)
             firstname = _firstname[0:9]
             lastname = _lastname[0:length_diff]
@@ -57,6 +57,7 @@ def transform_name(name: str) -> str | None:
 
     if len(username) > 15:
         print("**** ERROR ****")
+        return None
 
     #print(username)
 
