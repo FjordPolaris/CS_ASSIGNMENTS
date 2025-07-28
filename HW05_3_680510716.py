@@ -10,25 +10,27 @@ from datetime import timedelta, timezone
 DEBUG = False
 
 
-def convert_time(delta: timedelta) -> Tuple[int, int, int]:
-    total_seconds = int(delta.total_seconds())
+def convert_time(delta: timedelta) -> Tuple[int, int, int, int]:
+    total_seconds: int = int(delta.total_seconds())
     total_seconds = abs(total_seconds)
 
-    hours = total_seconds // 3600
-    minutes = (total_seconds % 3600) // 60
-    seconds = total_seconds % 60
+    days: int = total_seconds // 86400
+    hours: int = (total_seconds % 86400) // 3600
+    minutes: int = (total_seconds % 3600) // 60
+    seconds: int = total_seconds % 60
 
-    return hours, minutes, seconds
+    return days, hours, minutes, seconds
 
 
 def calculate_timezone(tz: str) -> timezone:
     offset_hour: int = 0
     re_timezone: timezone = timezone.utc
     
+    # Support UTC+7 or UTC+07 or UTC+12
     if tz.startswith("UTC+"):
-        offset_hour = int(tz[4:5])
+        offset_hour = int(tz[4:6])
     elif tz.startswith("UTC-"):
-        offset_hour = int(tz[4:5]) * -1
+        offset_hour = int(tz[4:6]) * -1
 
     re_timezone = timezone(timedelta(hours = offset_hour))
     return re_timezone
@@ -47,15 +49,26 @@ def display_post_time(post_time: str, post_tz: str,
     post_datetime = post_datetime.replace(tzinfo=post_timezone)
     view_datetime = view_datetime.replace(tzinfo=view_timezone)
 
-    delta: timedelta = view_datetime.astimezone(timezone.utc) - post_datetime.astimezone(timezone.utc)
-    hours, minutes, seconds = convert_time(delta) or (0, 0, 0)
+    neutralised_postdate = post_datetime.astimezone(timezone.utc)
+    neutralised_viewdate = view_datetime.astimezone(timezone.utc)
+    post_in_view_tz = post_datetime.astimezone(view_timezone)
+
+    delta: timedelta = neutralised_postdate - neutralised_viewdate
+    days, hours, minutes, seconds = convert_time(delta) or (0, 0, 0, 0)
 
     #print(hours, minutes, seconds)
 
-    if not hours and minutes:
+    if (not hours and minutes and not days):
         return f"{minutes}m"
-    elif hours and hours < 24:
+    elif (hours and hours < 24 and not days):
         return f"{hours}h"
+    elif (days and days < 7):
+        weekday: str = post_in_view_tz.strftime("%A")
+        return weekday
+    elif (neutralised_postdate.year == neutralised_viewdate.year and minutes):
+        return post_in_view_tz.strftime("%b %d")
+    elif (neutralised_postdate.year != neutralised_viewdate.year):
+        return post_in_view_tz.strftime("%b %d, %Y")
 
     return "just now"
 
@@ -64,6 +77,12 @@ def test_display_post_time():
     assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:45', 'UTC') == 'just now'
     assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-15 11:15:00', 'UTC') == '45m'
     assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-15 15:45:00', 'UTC') == '5h'
+    assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-19 15:45:00', 'UTC') == 'Monday'
+    assert display_post_time('2023-05-15 03:30:00', 'UTC+7', '2023-12-19 15:45:00', 'UTC+3') == 'May 14'
+    assert display_post_time('2023-05-15 03:30:00', 'UTC+7', '2024-12-19 15:45:00', 'UTC+4') == 'May 15, 2023'
+    assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-15 18:15:00', 'UTC+7') == '45m'
+    assert display_post_time('2023-09-01 12:00:00', 'UTC-10', '2023-09-05 00:00:00', 'UTC+2') == 'Saturday'
+    assert display_post_time('2023-01-01 00:00:01', 'UTC+14', '2023-12-31 09:59:59', 'UTC') == 'Dec 31, 2022'
     print('ALL OK')
 
 
