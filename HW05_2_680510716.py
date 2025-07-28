@@ -23,6 +23,8 @@ def transform_name(name: str) -> str | None:
 
     full_name: str = string.capwords(str.strip(name))
     _lastname, _firstname = str.split(full_name)
+    _lastname = str.capitalize(_lastname)
+    _firstname = str.capitalize(_firstname)
     
     if not _lastname.isalpha() or not _firstname.isalpha(): return
 
@@ -54,10 +56,6 @@ def transform_name(name: str) -> str | None:
             lastname = _lastname[0:length_diff]
 
     username = f"{firstname}.{lastname}"
-
-    if len(username) > 15:
-        print("**** ERROR ****")
-        return None
 
     #print(username)
 
