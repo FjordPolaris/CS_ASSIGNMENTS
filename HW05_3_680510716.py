@@ -54,7 +54,7 @@ def display_post_time(post_time: str, post_tz: str,
     post_in_view_tz = post_datetime.astimezone(view_timezone)
 
     delta: timedelta = neutralised_postdate - neutralised_viewdate
-    days, hours, minutes, seconds = convert_time(delta) or (0, 0, 0, 0)
+    days, hours, minutes, _ = convert_time(delta) or (0, 0, 0, 0)
 
     #print(hours, minutes, seconds)
 
