@@ -4,60 +4,72 @@
 # HW05_3
 # 204111 Sec 003
 
-from typing import Tuple
 from datetime import timedelta, timezone
 
 DEBUG = False
 
 
-def convert_time(delta: timedelta) -> Tuple[int, int, int, int]:
+def convert_time(delta: timedelta) -> tuple[int, int, int, int]:
     total_seconds: int = int(delta.total_seconds())
     total_seconds = abs(total_seconds)
 
-    days: int = total_seconds // 86400
-    hours: int = (total_seconds % 86400) // 3600
-    minutes: int = (total_seconds % 3600) // 60
+    _minutes: int = total_seconds // 60
+    _hours: int = _minutes // 60
+
+    days: int = _hours // 24
+    hours: int = _hours % 24
+    minutes: int = _minutes % 60
     seconds: int = total_seconds % 60
 
     return days, hours, minutes, seconds
 
 
 def calculate_timezone(tz: str) -> timezone:
-    offset_hour: int = 0
-    re_timezone: timezone = timezone.utc
+    time_zone_offset: int = 0
     
-    # Support UTC+7 or UTC+07 or UTC+12
+    # Support UTC+7 or UTC+12 or UTC+0.25
     if tz.startswith("UTC+"):
-        offset_hour = int(tz[4:6])
+        time_zone_offset = int(tz[4:])
     elif tz.startswith("UTC-"):
-        offset_hour = int(tz[4:6]) * -1
+        time_zone_offset = int(tz[4:]) * -1
+    else:
+        return timezone.utc
 
-    re_timezone = timezone(timedelta(hours = offset_hour))
+    # As timedelta(hours) argument automatically convert hours' decimal into proper minutes
+    # There's no need to store digits after decimal and pass minutes argument separately
+    re_timezone: timezone = timezone(timedelta(hours = time_zone_offset))
     return re_timezone
 
 
 def display_post_time(post_time: str, post_tz: str, 
                       view_time: str, view_tz: str) -> str:
-    from datetime import datetime, timezone
+    from datetime import datetime
 
+    # Preliminary - converting string into datetime object 
     post_datetime: datetime = datetime.strptime(post_time, "%Y-%m-%d %H:%M:%S")
     view_datetime: datetime = datetime.strptime(view_time, "%Y-%m-%d %H:%M:%S")
 
+    # Initialise Timezone
     post_timezone: timezone = calculate_timezone(post_tz)
     view_timezone: timezone = calculate_timezone(view_tz)
 
-    post_datetime = post_datetime.replace(tzinfo=post_timezone)
-    view_datetime = view_datetime.replace(tzinfo=view_timezone)
+    # Apply Timezone
+    post_datetime = post_datetime.replace(tzinfo = post_timezone)
+    view_datetime = view_datetime.replace(tzinfo = view_timezone)
 
-    neutralised_postdate = post_datetime.astimezone(timezone.utc)
-    neutralised_viewdate = view_datetime.astimezone(timezone.utc)
-    post_in_view_tz = post_datetime.astimezone(view_timezone)
+    # UTC+0 Standardisation
+    neutralised_postdate: datetime = post_datetime.astimezone(timezone.utc)
+    neutralised_viewdate: datetime = view_datetime.astimezone(timezone.utc)
 
-    delta: timedelta = neutralised_postdate - neutralised_viewdate
-    days, hours, minutes, _ = convert_time(delta) or (0, 0, 0, 0)
+    # Apply View's Timezone to the Post
+    post_in_view_tz: datetime = post_datetime.astimezone(view_timezone)
+
+    delta: timedelta = abs(neutralised_postdate - neutralised_viewdate)
+    days, hours, minutes, _ = convert_time(delta)
 
     #print(hours, minutes, seconds)
 
+    # Main Logic :<
     if (not hours and minutes and not days):
         return f"{minutes}m"
     elif (hours and hours < 24 and not days):
@@ -65,9 +77,10 @@ def display_post_time(post_time: str, post_tz: str,
     elif (days and days < 7):
         weekday: str = post_in_view_tz.strftime("%A")
         return weekday
-    elif (neutralised_postdate.year == neutralised_viewdate.year and minutes):
-        return post_in_view_tz.strftime("%b %d")
-    elif (neutralised_postdate.year != neutralised_viewdate.year):
+    elif (post_in_view_tz.year == view_datetime.year):
+        if hours or minutes or days:
+            return post_in_view_tz.strftime("%b %d")
+    elif (post_in_view_tz.year != view_datetime.year):
         return post_in_view_tz.strftime("%b %d, %Y")
 
     return "just now"
