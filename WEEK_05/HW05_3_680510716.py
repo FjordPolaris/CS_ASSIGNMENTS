@@ -25,13 +25,13 @@ def convert_time(delta: timedelta) -> tuple[int, int, int, int]:
 
 
 def calculate_timezone(tz: str) -> timezone:
-    time_zone_offset: int = 0
+    time_zone_offset: float = 0
     
     # Support UTC+7 or UTC+12 or UTC+0.25
     if tz.startswith("UTC+"):
-        time_zone_offset = int(tz[4:])
+        time_zone_offset = float(tz[4:])
     elif tz.startswith("UTC-"):
-        time_zone_offset = int(tz[4:]) * -1
+        time_zone_offset = float(tz[4:]) * -1
     else:
         return timezone.utc
 
@@ -86,8 +86,9 @@ def display_post_time(post_time: str, post_tz: str,
     return "just now"
 
 
-def test_display_post_time():
+def test_display_post_time(): 
     assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:45', 'UTC') == 'just now'
+    assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:00', 'UTC+0.25') == '30m'
     assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-15 11:15:00', 'UTC') == '45m'
     assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-15 15:45:00', 'UTC') == '5h'
     assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-19 15:45:00', 'UTC') == 'Monday'
