@@ -42,8 +42,10 @@ def calculate_timezone(tz: str) -> timezone:
 
 
 def display_post_time(post_time: str, post_tz: str, 
-                      view_time: str, view_tz: str) -> str:
+                      view_time: str, view_tz: str) -> str | None:
     from datetime import datetime
+
+    _EPOCH: datetime = datetime(1970, 1, 1, tzinfo=timezone.utc)
 
     # Preliminary - converting string into datetime object 
     post_datetime: datetime = datetime.strptime(post_time, "%Y-%m-%d %H:%M:%S")
@@ -60,6 +62,9 @@ def display_post_time(post_time: str, post_tz: str,
     # UTC+0 Standardisation
     neutralised_postdate: datetime = post_datetime.astimezone(timezone.utc)
     neutralised_viewdate: datetime = view_datetime.astimezone(timezone.utc)
+
+    if (neutralised_postdate < _EPOCH or neutralised_viewdate < _EPOCH):
+        return
 
     # Apply View's Timezone to the Post
     post_in_view_tz: datetime = post_datetime.astimezone(view_timezone)
@@ -89,8 +94,13 @@ def display_post_time(post_time: str, post_tz: str,
 def test_display_post_time(): 
     # UTC+0. TEST
     assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:00', 'UTC+0.25') == '15m'
-    assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:00', 'UTC+0.5') == '30m'
-    assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:00', 'UTC+0.75') == '45m'
+    assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 11:00:00', 'UTC+0.5') == 'just now'
+
+    # MISC
+    assert display_post_time('2023-05-15 10:30:00', 'UTC-0.75', '2023-05-15 10:30:00', 'UTC') == '45m'
+    assert display_post_time('2023-12-31 23:30:00', 'UTC+14', '2023-12-31 03:30:00', 'UTC-12') == '6h'
+    assert display_post_time('2025-07-20 23:00:00', 'UTC', '2025-07-30 23:00:00', 'UTC') == 'Jul 20'
+    assert display_post_time('1900-07-20 23:00:00', 'UTC', '2025-07-30 23:00:00', 'UTC') == 'ERROR'
 
     # DEFAULT TEST
     assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:45', 'UTC') == 'just now'
