@@ -30,5 +30,4 @@ def dest_rotate_list(list_a: list[int], n: int):
 
 
 if __name__ == "__main__":
-    list_a: list[int] = [1, 2, 3, 4]
-    dest_rotate_list(list_a, 1)
+#test_dest_rotate_list()

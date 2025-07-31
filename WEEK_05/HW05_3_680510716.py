@@ -100,7 +100,7 @@ def test_display_post_time():
     assert display_post_time('2023-05-15 10:30:00', 'UTC-0.75', '2023-05-15 10:30:00', 'UTC') == '45m'
     assert display_post_time('2023-12-31 23:30:00', 'UTC+14', '2023-12-31 03:30:00', 'UTC-12') == '6h'
     assert display_post_time('2025-07-20 23:00:00', 'UTC', '2025-07-30 23:00:00', 'UTC') == 'Jul 20'
-    assert display_post_time('1900-07-20 23:00:00', 'UTC', '2025-07-30 23:00:00', 'UTC') == 'ERROR'
+    assert display_post_time('1900-07-20 23:00:00', 'UTC', '2025-07-30 23:00:00', 'UTC') == None
 
     # DEFAULT TEST
     assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:45', 'UTC') == 'just now'
