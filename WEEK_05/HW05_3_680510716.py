@@ -87,8 +87,13 @@ def display_post_time(post_time: str, post_tz: str,
 
 
 def test_display_post_time(): 
-    assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:45', 'UTC') == 'just now'
+    # UTC+0. TEST
     assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:00', 'UTC+0.25') == '15m'
+    assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:00', 'UTC+0.5') == '30m'
+    assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:00', 'UTC+0.75') == '45m'
+
+    # DEFAULT TEST
+    assert display_post_time('2023-05-15 10:30:00', 'UTC','2023-05-15 10:30:45', 'UTC') == 'just now'
     assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-15 11:15:00', 'UTC') == '45m'
     assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-15 15:45:00', 'UTC') == '5h'
     assert display_post_time('2023-05-15 10:30:00', 'UTC', '2023-05-19 15:45:00', 'UTC') == 'Monday'
