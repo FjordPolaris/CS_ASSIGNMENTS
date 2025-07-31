@@ -69,6 +69,9 @@ def display_post_time(post_time: str, post_tz: str,
 
     #print(hours, minutes, seconds)
 
+    if neutralised_viewdate.hour < neutralised_postdate.hour:
+        print(view_time, post_time)
+
     # Main Logic :<
     if (not hours and minutes and not days):
         return f"{minutes}m"
