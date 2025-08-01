@@ -13,20 +13,17 @@ def test_dest_rotate_list():
     dest_rotate_list(list_a, 105)
     dest_rotate_list(list_a, -1)
     dest_rotate_list(list_a, -2)
-    del list_a
 
 
 def dest_rotate_list(list_a: list[int], n: int):
     if not n:
-        print("output =", list_a)
-
-    list_alpha: list[int] = list_a.copy()
-    times: int = n % len(list_alpha)
-
-    list_alpha = list_alpha[-times:] + list_alpha[:-times]
+        print("output =", list_a),
     
-    print("output =", list_alpha)
-    del list_alpha, times
+    times: int = n % len(list_a)
+    list_a[:] = list_a[-times:] + list_a[:-times]
+    
+    print("output =", list_a)
+    del times
     #return list_alpha
 
 

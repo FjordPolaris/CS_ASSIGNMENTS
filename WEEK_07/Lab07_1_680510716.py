@@ -10,9 +10,14 @@ DEBUG = False
 def trekking_seq(student_ids: list[str]) -> list[str]:
     
     filter_year: str = str(sorted(student_ids[0:2], reverse=True))
-    filter_digit: str = str(sorted(student_ids, key=lambda y: y[-5:] if len(y) == 9 else y[-3:]))
-    result: list[str] = sorted(student_ids, key=lambda x: (x[2:4], filter_year, filter_digit))
+    filter_digit: str = ""
+    if len(student_ids[:]) == 9:
+        filter_digit = str(student_ids[:-5:])
+    else:
+        filter_digit = str(student_ids[-3:])
     print(filter_digit)
+
+    result: list[str] = sorted(student_ids, key=lambda x: (x[2:4], filter_year, filter_digit))
 
     return result
 
