@@ -5,16 +5,20 @@
 # 204111 Sec 003
 
 
-
-
-
-
 def square_frame(n: int, sep: str = "") -> None:
-    _end: int = n ** 2
-    nums_alpha: list = list(range(1, _end))
+    size: int = n * n
+    padding_space: int = len(str(size))
+    nums: list = list(map(lambda x: int(str(x).zfill(padding_space)), range(1, size + 1)))
+    print("NUMS:", nums)
     
-    nums_beta: list = list(map(lambda x: str(list(range(1, x + 1))), nums_alpha))
-    print(nums_beta)
+    rows: list = list(map(lambda y: str(nums[y*n:(y+1)*n]), range(n)))
+    print("ROWS:", rows)
+
+    list_a: list = list(map(lambda r: r.strip('[]'), rows))
+    print("LIST:", list_a)
+
+    result = '\n'.join(list_a).replace(',', '')
+    print(result)
 
 
 if __name__ == "__main__":
